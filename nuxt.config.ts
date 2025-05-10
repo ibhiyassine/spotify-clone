@@ -2,6 +2,14 @@
 import { resolve } from "path";
 import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
+  runtimeConfig: {
+    public: {
+      spotifyClientId: process.env.CLIENT_ID,
+      spotifyClientSecret: process.env.CLIENT_SECRET,
+      spotifyRedirectUri: process.env.REDIRECT_URI
+    }
+  },
+
   alias: {
     '@': resolve(__dirname, '/'),
   },
@@ -13,7 +21,8 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/fonts',
     '@nuxt/image',
-    'shadcn-nuxt'
+    'shadcn-nuxt',
+    '@pinia/nuxt'
   ],
   css: ['~/assets/css/main.css'],
   shadcn: {
