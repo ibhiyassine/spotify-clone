@@ -27,7 +27,7 @@ function handleLogin() {
             In order to use the app, you need to login with your Spotify account.
         </div>
         <div class="h-[80px] flex justify-center items-center">
-            <Button v-show="!disabled" class="bg-spotify-green text-slate-950 rounded-full text-xl font-bold hover:bg-spotify-green-dark transition duration-300 ease-in-out"
+            <Button v-show="!disabled" class="cursor-pointer bg-spotify-green text-slate-950 rounded-full text-xl font-bold hover:bg-spotify-green-dark transition duration-300 ease-in-out"
                 @click="handleLogin()">
                 <span class="p-4">
                     Login with Spotify

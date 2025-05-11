@@ -121,5 +121,26 @@ export const useSearch = () => {
         }
     };
 
-    return { searchTracks, searchArtists, searchPlaylists, searchAlbums, searchPlaylistById };
+    const searchOwnedPlaylists = async () => {
+        try{
+            const response = await fetch(`https://api.spotify.com/v1/users/${auth.user.id}/playlists`, {
+                method: 'GET',
+                headers: {
+                    'Authorization' : `Bearer ${auth.token}`,
+                }
+            });
+            if(!response.ok){
+                throw new Error("Wasn't able to fetch user's playlists");
+            }
+            const data = await response.json();
+
+            return data;
+        }
+        catch(e) {
+            console.error("There was an error while fetching for playlist owned by user", e);
+            throw e
+        }
+    };
+
+    return { searchTracks, searchArtists, searchPlaylists, searchAlbums, searchPlaylistById, searchOwnedPlaylists };
 };
