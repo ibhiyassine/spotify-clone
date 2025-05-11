@@ -2,10 +2,12 @@
 import { useRoute } from 'vue-router';
 import { useSpotify } from '~/composables/useSpotify';
 import { useSearch } from '~/composables/useSearch';
+import { usePlayerStore } from '~/stores/player';
 
 const route = useRoute();
 const id = route.params.id;
 const { searchPlaylistById } = useSearch();
+const playerStore = usePlayerStore();
 const playlist = ref(null);
 const isLoading = ref(true);
 const error = ref('');
@@ -16,6 +18,22 @@ const formatDuration = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+};
+
+// Play a track from the playlist
+const playTrack = (index) => {
+    console.log('Play button clicked, index:', index);
+    console.log('Playlist data:', playlist.value?.tracks?.items);
+    
+    if (playlist.value && playlist.value.tracks && playlist.value.tracks.items) {
+        console.log('Setting playlist in store, items count:', playlist.value.tracks.items.length);
+        playerStore.setPlaylist(playlist.value.tracks.items, index);
+        playerStore.togglePlay(true);
+        console.log('Player visibility after setting track:', playerStore.isVisible);
+        console.log('Current track after setting:', playerStore.currentTrack);
+    } else {
+        console.error('Cannot play - missing playlist data');
+    }
 };
 
 onMounted(async () => {
@@ -77,6 +95,7 @@ onMounted(async () => {
         <!-- Playlist Controls -->
         <div class="py-4 flex items-center gap-4">
             <Button 
+                @click="playTrack(0)"
                 class="rounded-full p-4 h-14 w-14 flex items-center justify-center bg-green-500 hover:bg-green-400 text-black"
                 aria-label="Play"
             >
@@ -106,7 +125,8 @@ onMounted(async () => {
                 <div 
                     v-for="(item, index) in playlist.tracks?.items" 
                     :key="index" 
-                    class="grid grid-cols-[16px_4fr_3fr_minmax(120px,1fr)] gap-4 px-4 py-3 text-zinc-300 text-md border-b border-transparent hover:bg-zinc-800/50 rounded-md group"
+                    class="grid grid-cols-[16px_4fr_3fr_minmax(120px,1fr)] gap-4 px-4 py-3 text-zinc-300 text-md border-b border-transparent hover:bg-zinc-800/50 rounded-md group cursor-pointer"
+                    @click="playTrack(index)"
                 >
                     <!-- Track Number -->
                     <div class="flex items-center justify-center">
