@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("auth", {
         user: null,
     }),
 
+    // Simpler persist configuration that works better with SSR
     persist: true,
 
     actions: {

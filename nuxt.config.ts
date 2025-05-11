@@ -9,10 +9,6 @@ export default defineNuxtConfig({
       spotifyRedirectUri: process.env.REDIRECT_URI
     }
   },
-
-  alias: {
-    '@': resolve(__dirname, '/'),
-  },
   compatibilityDate: '2024-11-01',
   devtools: { enabled: true },
 
@@ -40,5 +36,18 @@ export default defineNuxtConfig({
     plugins: [
       tailwindcss(),
     ],
+    server: {
+      hmr: {
+        clientPort: 24678,
+        port: 24678,
+      },
+      host: true,
+      watch: {
+        usePolling: true,           // Force file change detection (great for WSL, Docker, Ngrok, etc.)
+        interval: 100               // Polling interval (ms) for faster reload
+      },
+      // Allow all ngrok domains
+      allowedHosts: ['localhost', '127.0.0.1', '.ngrok-free.app'],
+    },
   }
 })

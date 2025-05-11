@@ -19,7 +19,11 @@ export const useAuth = () => {
             "playlist-modify-private",
             "user-library-read",
             "user-library-modify",
+            "ugc-image-upload" // Add this scope for playlist image upload
         ].join(" ");
+
+        // Log the redirect URI to verify what's being used
+        console.log("Using redirect URI:", config.public.spotifyRedirectUri);
 
         const params = new URLSearchParams({
             response_type: "code",
@@ -32,6 +36,7 @@ export const useAuth = () => {
     };
 
     const handleCallback = async (code) => {
+        console.log("I am here");
         try{
             const params = new URLSearchParams({
                 grant_type: "authorization_code",
@@ -39,11 +44,13 @@ export const useAuth = () => {
                 redirect_uri: config.public.spotifyRedirectUri,
             });
     
+            // Create base64 credentials using browser's btoa function instead of Buffer
+            const credentials = btoa(`${config.public.spotifyClientId}:${config.public.spotifyClientSecret}`);
+    
             const query = await fetch("https://accounts.spotify.com/api/token", {
                 method: "POST",
                 headers: {
-                    Authorization:
-                        "Basic " + new Buffer.from(client_id + ":" + client_secret).toString("base64"),
+                    Authorization: `Basic ${credentials}`,
                     "Content-type": "application/x-www-form-urlencoded",
                 },
                 body: params.toString(),
@@ -62,8 +69,8 @@ export const useAuth = () => {
             auth.setUser(userProfile)
         }
         catch(e){
-            console.error("Error while managing callback: ", error);
-            throw error;
+            console.error("Error while managing callback: ", e);
+            throw e;
         }
         
     };

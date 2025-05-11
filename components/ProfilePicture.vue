@@ -1,4 +1,6 @@
 <script setup>
+import { onMounted } from 'vue';
+
     const props = defineProps({
         images: {
             type: Array,
@@ -14,6 +16,10 @@
         }
     });
     const emit = defineEmits(['profile-click']);
+
+    onMounted(() => {
+        console.log('ProfilePicture component mounted');
+    });
 </script>
 
 <template>
