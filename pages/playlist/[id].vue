@@ -4,13 +4,16 @@ import { useSpotify } from '~/composables/useSpotify';
 import { useSearch } from '~/composables/useSearch';
 import { usePlayerStore } from '~/stores/player';
 
+const auth = useAuthStore();
 const route = useRoute();
 const id = route.params.id;
 const { searchPlaylistById } = useSearch();
 const playerStore = usePlayerStore();
 const playlist = ref(null);
+let isOwner = ref(false);
 const isLoading = ref(true);
 const error = ref('');
+const showModal = ref(false); // Control modal visibility
 
 // Format milliseconds to minutes:seconds
 const formatDuration = (ms) => {
@@ -36,10 +39,16 @@ const playTrack = (index) => {
     }
 };
 
+// Prepare playlist data for editing
+const prepareDataForEdit = () => {
+    showModal.value = true;
+};
+
 onMounted(async () => {
     isLoading.value = true;
     try {
         playlist.value = await searchPlaylistById(id);
+        isOwner.value = playlist.value.owner.id === auth.user.id;
         console.log(playlist.value);
     } catch (err) {
         console.error(err);
@@ -57,7 +66,6 @@ onMounted(async () => {
             <div class="text-white font-black text-6xl mb-4">
             Loading...
             </div>
-            <Progress :model-value="33" class="bg-white"/>
         </div>
     </div>
     <div v-else-if="!!error">
@@ -102,6 +110,20 @@ onMounted(async () => {
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z" />
                 </svg>
+            </Button>
+            
+            <!-- Edit Playlist Button - Only visible for owner -->
+            <Button 
+                v-if="isOwner"
+                @click="prepareDataForEdit"
+                class="rounded-full px-4 h-10 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-white"
+                aria-label="Edit Playlist"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+                Edit Playlist
             </Button>
         </div>
 
@@ -167,6 +189,14 @@ onMounted(async () => {
                 </div>
             </div>
         </div>
+
+        <!-- Playlist Edit Modal -->
+        <PlaylistModal 
+            v-if="showModal" 
+            @close="showModal = false"
+            :playlist-data="playlist"
+            :is-editing="true"
+        />
     </div>
 </template>
 
