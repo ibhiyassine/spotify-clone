@@ -40,6 +40,7 @@ onMounted(async () => {
             flex 
             items-center 
             justify-evenly
+            bg-spotify-black
         ">
         <img src="~/assets/Spotify-clone.png" alt="Profile Picture" class="rounded-full" width="50" />
         <SearchBar class="grow" />
