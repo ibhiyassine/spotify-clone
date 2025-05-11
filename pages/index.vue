@@ -40,7 +40,9 @@ onMounted(async () => {
             </div>
             <div id="TopPlaylists" class="mb-6">
                 <div class="flex items-center justify-between">
-                    <div class="text-4xl font-bold mb-2">Your Playlists</div>
+                    <NuxtLink to="/playlist">
+                        <div class="text-4xl font-bold mb-2">Your Playlists</div>
+                    </NuxtLink>
                     <IconsAdd  @click="showModal = true; console.log(showModal)" class="text-white font-bold text-3xl rounded-full bg-spotify-gray hover:rotate-90 ease-in duration-300 hover:bg-spotify-green-dark hover:scale-110"/>
                     <div v-if="showModal" class="z-20 fixed inset-0 flex items-center justify-center bg-opacity-10 backdrop-blur-sm">
                         <PlaylistModal @close="showModal = false" />
